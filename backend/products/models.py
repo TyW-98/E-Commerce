@@ -11,7 +11,6 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True)
     category = models.CharField(max_length=255, null=False, blank=False)
     description = models.TextField(null = False, blank=False)
-    rating = models.DecimalField(max_digits=3, decimal_places=2, default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     numReviews = models.IntegerField(default=0)
     price = models.DecimalField(max_digits=7, decimal_places=2, blank = False, null=False)
     discount = models.DecimalField(max_digits = 4, decimal_places=2, default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
@@ -20,6 +19,25 @@ class Product(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.brand}"
+    
+    def average_rating(self):
+        ratings = Review.objects.filter(productID = self.id)
+        total_ratings = sum(rate.rating for rate in ratings)
+        
+        if len(ratings) > 0:
+            average_rating = total_ratings/len(ratings)
+        else:
+            average_rating = 0
+            
+        return round(average_rating,1)
+    
+    def calculate_discounted_price(self):
+        if self.discount > 0:
+            discounted_price = self.price - (self.price * (self.discount) / 100)
+        else:
+            discounted_price = 0
+            
+        return discounted_price
     
 class Review(models.Model):
     userID = models.ForeignKey(User, on_delete = models.CASCADE, null=False, verbose_name="User ID")
@@ -69,4 +87,4 @@ class ShippingAddress(models.Model):
         return f"{str(self.order_id)} {self.address}"
 
     
-    
+      

@@ -1,9 +1,16 @@
 import Image from "next/image";
+import ProductCard from "./components/ProductCard";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-5xl">Testing</h1>
+    <main className="min-h-screen lg:px-96 pt-5">
+      <section className="grid sm:grid-cols-3 md:grid-cols-4 px-10 gap-2">
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+      </section>
     </main>
   );
 }

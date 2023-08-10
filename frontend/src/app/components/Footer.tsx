@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, ChangeEvent, MouseEvent } from "react";
 import {
   FaFacebook,
   FaInstagram,
@@ -31,32 +31,44 @@ export default function Footer() {
   ];
   const currentYear = new Date().getFullYear();
 
+  function handleEmailInput(event: ChangeEvent<HTMLInputElement>): void {
+    const { name, value } = event.target;
+    setEmail(value);
+  }
+
+  function handleEmailSubmit(event: MouseEvent<HTMLButtonElement>): void {
+    event.preventDefault();
+  }
+
   return (
     <footer className="lg:px-64 mt-44">
-      <div className="flex justify-between align-middle items-center">
-        <div>
-          <h5>Get Exclusive Offers</h5>
-          <p>Sign up for our newsletter to receive updates and promotions</p>
+      <div className="w-max mx-auto text-center">
+        <div className="text-center">
+          <h5 className="text-5xl/4 font-bold mb-12">
+            Get the latest updates here
+          </h5>
+          <p className="mb-10 text-lg">
+            Subscribe to our newsletter for exclusive offers
+          </p>
         </div>
         <div>
-          <div className="flex gap-6">
+          <form className="flex gap-4 mb-4">
             <input
-              type="text"
+              type="email"
               name="email"
               value={email}
               placeholder="Enter your email"
-              className="border-2 border-slate-500 border-solid p-4"
+              className="border-2 border-slate-500 border-solid p-4 lg:w-[550px]"
+              onChange={handleEmailInput}
             />
-            <button className="py-2 px-4 border-2 border-slate-500 border-solid">
+            <button className="py-2 px-4 border-2 border-slate-500 border-solid bg-black text-white active:opacity-80">
               Subscribe
             </button>
-          </div>
+          </form>
         </div>
+        <p className="">By subscribing, you agree to our Privacy Policy.</p>
       </div>
-      <p className="text-right pr-20 text-sm text-slate-500 ">
-        By subscribing, you agree to our Privacy Policy.
-      </p>
-      <div className="display flex justify-between mt-28 pr-2 items-center">
+      <div className="display flex justify-between mt-40 pr-2 items-center">
         <div>
           <h5 className="text-2xl font-bold">GoTech</h5>
           <p className="my-5">

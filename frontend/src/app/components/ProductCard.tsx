@@ -8,8 +8,14 @@ export default function ProductCard({}: Props) {
   const numRating = 10;
 
   return (
-    <div className="shadow-lg px-10 py-5 rounded-xl flex flex-col items-center ">
-      <Image src={"/iphone-14.jpg"} alt="Product 1" width={250} height={300} />
+    <div className="shadow-lg px-2 py-5 rounded-xl flex flex-col items-center ">
+      <Image
+        src={"/iphone-14.jpg"}
+        alt="Product 1"
+        width={250}
+        height={300}
+        className="w-[250px] h-auto"
+      />
       <a>
         <h5 className="font-bold mt-2">Apple</h5>
         <h4 className="text-sm">IPhone 14 Pro</h4>
@@ -29,7 +35,7 @@ export default function ProductCard({}: Props) {
         <h2 className="relative text-4xl font-semibold">21</h2>
       </div>
 
-      <button className="border border-white rounded-2xl w-full bg-orange-300 py-2 my-2 shadow-sm hover:bg-orange-500 active:border active:border-solid active:border-black">
+      <button className="border border-white rounded-2xl w-full max-w-[250px] bg-orange-300 py-2 my-2 shadow-sm hover:bg-orange-500 active:border active:border-solid active:border-black">
         Add to basket
       </button>
     </div>

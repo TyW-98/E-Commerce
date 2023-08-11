@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import DropdownMenu from "./DropdownMenu";
 import { AiOutlineSearch } from "react-icons/ai";
 
@@ -8,15 +8,15 @@ export default function ModernNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [search, setSearch] = useState("");
 
-  function handleSearchInput(event) {
+  function handleSearchInput(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setSearch(value);
   }
 
   return (
     <header>
-      <div className="min-w-screen px-10 border-b-black border">
-        <nav className="flex align-middle items-center justify-between pt-8 pb-6 ">
+      <div className="min-w-screen px-10 border-b-black border pt-4">
+        <nav className="flex align-middle items-center justify-between">
           <a
             href=""
             className="text-4xl text-black font-semibold cursor-pointer"
@@ -24,20 +24,25 @@ export default function ModernNavbar() {
             GoTech
           </a>
           <div className="flex md:justify-evenly w-full px-32 md:max-w-[1000px]">
-            <a href="" className="text-base text-slate-700 font-medium">
-              Discover More
-            </a>
-            <a href="" className="text-base text-slate-700 font-medium">
-              Explore Now
-            </a>
-            <a href="" className="text-base text-slate-700 font-medium">
-              Shop Online
-            </a>
-            <p className="text-base text-slate-700 font-medium cursor-pointer">
-              Browse Categories{" "}
-            </p>
+            <div className="h-12 flex items-center">
+              <a href="" className="text-base text-slate-700 font-medium">
+                Discover More
+              </a>
+            </div>
+            <div className="h-12 flex items-center">
+              <a href="" className="text-base text-slate-700 font-medium">
+                Explore now
+              </a>
+            </div>
+            <div className="h-12 flex items-center">
+              <a href="" className="text-base text-slate-700 font-medium">
+                Shop Online
+              </a>
+            </div>
+
+            <DropdownMenu />
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mb-4">
             <div className="flex bg-slate-200 items-center">
               <input
                 type="text"
@@ -66,7 +71,6 @@ export default function ModernNavbar() {
           </div>
         </nav>
       </div>
-      {isDropdownOpen ? <DropdownMenu /> : null}
     </header>
   );
 }

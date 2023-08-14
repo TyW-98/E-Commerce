@@ -6,6 +6,30 @@ export default function ProductCategory() {
       <a>
         <div className="relative h-[450px] cursor-pointer">
           <Image
+            src={"/laptop.png"}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+            alt="console card"
+          />
+        </div>
+        <h5 className="text-xl font-bold mt-2">Computer & Laptop</h5>
+      </a>
+      <a>
+        <div className="relative h-[450px] cursor-pointer">
+          <Image
+            src={"/phone.png"}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+            alt="console card"
+          />
+        </div>
+        <h5 className="text-xl font-bold mt-2">Phone</h5>
+      </a>
+      <a>
+        <div className="relative h-[450px] cursor-pointer">
+          <Image
             src={"/console.avif"}
             layout="fill"
             objectFit="cover"
@@ -13,12 +37,7 @@ export default function ProductCategory() {
             alt="console card"
           />
         </div>
-      </a>
-      <a>
-        <div className="bg-gray-400 h-[450px]"></div>
-      </a>
-      <a>
-        <div className="bg-gray-400 h-[450px]"></div>
+        <h5 className="text-xl font-bold mt-2">Console</h5>
       </a>
     </div>
   );

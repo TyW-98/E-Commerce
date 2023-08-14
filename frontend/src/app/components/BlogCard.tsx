@@ -11,7 +11,16 @@ type Props = {
 export default function BlogCard({ title, summary, image, category }: Props) {
   return (
     <div className="w-10/12 mx-auto">
-      <div className="bg-gray-400 h-[300px]"></div>
+      <div className="h-[200px] w-[500px] ">
+        <Image
+          src={`/${image}`}
+          layout="none"
+          width={100}
+          height={12}
+          alt={title}
+          className="w-full h-[200px]"
+        />
+      </div>
       <p className="bg-gray-200 inline-block py-1 px-2 mt-5">{category}</p>
       <div className="mt-4 cursor-pointer active:text-blue-500">
         <h5 className="text-xl font-bold mt-4">{title}</h5>

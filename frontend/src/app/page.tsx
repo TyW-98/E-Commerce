@@ -9,10 +9,12 @@ export default function Home() {
       <section id="hero">
         <Hero />
       </section>
-      <section>
+      <section id="product-category">
         <ProductCategory />
       </section>
-      <Blog />
+      <section id="blog">
+        <Blog />
+      </section>
     </main>
   );
 }

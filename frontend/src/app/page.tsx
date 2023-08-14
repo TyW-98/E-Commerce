@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Hero from "./components/Hero";
+import ProductCategory from "./components/ProductCategory";
+import Blog from "./components/Blog";
 
 export default function Home() {
   return (
@@ -7,6 +9,10 @@ export default function Home() {
       <section id="hero">
         <Hero />
       </section>
+      <section>
+        <ProductCategory />
+      </section>
+      <Blog />
     </main>
   );
 }

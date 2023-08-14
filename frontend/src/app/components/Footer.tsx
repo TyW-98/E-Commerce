@@ -96,7 +96,9 @@ export default function Footer() {
           {links.map((lk, index) => {
             return (
               <li key={index}>
-                <a href="">{lk}</a>
+                <a href="" className="hover:underline">
+                  {lk}
+                </a>
               </li>
             );
           })}

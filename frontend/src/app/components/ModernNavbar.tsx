@@ -24,6 +24,7 @@ export default function ModernNavbar() {
             GoTech
           </a>
           <div className="flex md:justify-evenly w-full px-32 md:max-w-[1000px]">
+            <DropdownMenu />
             <div className="h-12 flex items-center">
               <a href="" className="text-base text-slate-700 font-medium">
                 Discover More
@@ -36,11 +37,9 @@ export default function ModernNavbar() {
             </div>
             <div className="h-12 flex items-center">
               <a href="" className="text-base text-slate-700 font-medium">
-                Shop Online
+                Blog
               </a>
             </div>
-
-            <DropdownMenu />
           </div>
           <div className="flex items-center gap-3 mb-4">
             <div className="flex bg-slate-200 items-center">

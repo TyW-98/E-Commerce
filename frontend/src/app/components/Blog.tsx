@@ -7,7 +7,7 @@ export default function Blog() {
       title: "The Future of Tech: Trends to Watch",
       summary:
         "Discover the exciting trends shaping the tech industry, from artificial intelligence to sustainable innovations.",
-      image: "",
+      image: "microchip.png",
       category: "Technology",
     },
     {
@@ -15,7 +15,7 @@ export default function Blog() {
       title: "Unveiling the New Generation Consoles",
       summary:
         "Get a sneak peek into the cutting-edge features and capabilities of the latest gaming consoles hitting the market.",
-      image: "",
+      image: "console.png",
       category: "Gaming",
     },
   ];

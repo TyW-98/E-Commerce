@@ -2,10 +2,13 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <div className="grid grid-cols-2 w-full items-center">
+    <div className="grid grid-cols-2 w-full items-center gap-3">
       <div>
         <h1 className="text-6xl font-bold">Welcome to Tech Universe</h1>
-        <p className="mt-4">Discover the latest tech gadgets and accessories</p>
+        <p className="mt-4">
+          Unveiling a World of Tech Wonders: Explore the Newest Gadgets and
+          Accessories in the Realm of Innovation
+        </p>
         <div className="flex gap-4 mt-4">
           <a className="bg-black text-white px-4 py-2 active:opacity-70 cursor-pointer">
             Shop

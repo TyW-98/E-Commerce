@@ -61,7 +61,10 @@ export default function Footer() {
               className="border-2 border-slate-500 border-solid p-4 lg:w-[550px]"
               onChange={handleEmailInput}
             />
-            <button className="py-2 px-4 border-2 border-slate-500 border-solid bg-black text-white active:opacity-80">
+            <button
+              className="py-2 px-4 border-2 border-slate-500 border-solid bg-black text-white active:opacity-80"
+              onClick={handleEmailSubmit}
+            >
               Subscribe
             </button>
           </form>

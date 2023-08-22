@@ -23,4 +23,4 @@ jobs:
       - name: Linting
         working-directory: ./backend
         run: |
-          docker-compose run --rm backend sh -c "python manage.py flake8"
+          docker-compose run --rm backend sh -c "flake8"

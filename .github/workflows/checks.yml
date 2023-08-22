@@ -1,4 +1,4 @@
-name: Backend-Checks
+name: checks
 
 on: [push]
 
@@ -15,6 +15,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test
-        uses: docker-compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
+        working-directory: ./backend
+        run: |
+          echo "$APP_ENV_CONTENT" > app.env
+          echo "$DB_ENV_CONTENT" > db.env
+          docker-compose run --rm backend sh -c "python manage.py test"
       - name: Linting
-        uses: docker-compose run --rm app sh -c "flake8"
+        working-directory: ./backend
+        run: |
+          docker-compose run --rm backend sh -c "flake8"

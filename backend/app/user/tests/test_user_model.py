@@ -50,14 +50,33 @@ class UserModelTest(TestCase):
         
         today = date.today()
         test_user_dob = self.user_details["dob"]
-        test_user_age = today.year - test_user_dob.year - ((today.month, today.day) < (test_user_dob.month, test_user_dob.day))
+        test_user_age = today.year - test_user_dob.year - (
+            (today.month, today.day) < 
+            (test_user_dob.month, test_user_dob.day)
+        )
         
         self.assertEqual(user.age, test_user_age)
         
     def test_user_permission(self):
-        """Test creating new user permission level"""
+        """Checking new user permission level"""
         user = get_user_model().objects.create_user(**self.user_details)
         
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
+        
+    def test_staff_permission(self):
+        """Checking staff permission level"""
+        staff = get_user_model().objects.create_staff(**self.user_details)
+        
+        self.assertTrue(staff.is_staff)
+        self.assertFalse(staff.is_superuser)
+        
+    def test_superuser_permission(self):
+        """Checking superuser permission level"""
+        superuser = get_user_model().objects.create_superuser(**self.user_details)
+        
+        self.assertTrue(superuser.is_staff)
+        self.assertTrue(superuser.is_superuser)
+
+
         

@@ -16,8 +16,18 @@ class UserManager(BaseUserManager):
 
     def create_user(self, username, email, password=None, **kwargs):
         """Create new user"""
-        if not (email and username and password):
-            raise ValueError("Please provide username, email and password")
+        missing_details = []
+        
+        if not email: 
+            missing_details.append("email")
+        if not username:
+            missing_details.append("username")
+        if not password:
+            missing_details.append("password")
+            
+        if missing_details:
+            raise ValueError(f"Please provide {', '.join(missing_details)}")
+        
         user = self.model(username=username, email=self.normalize_email(email), **kwargs)
         user.set_password(password)
         user.save(using=self.db)
@@ -29,6 +39,8 @@ class UserManager(BaseUserManager):
         staff = self.create_user(username,email, password, **kwargs)
         staff.is_staff = True
         staff.save(using=self.db)
+        
+        return staff
     
     def create_superuser(self, username, email, password=None, **kwargs):
         """Create Super user"""

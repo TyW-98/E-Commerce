@@ -17,6 +17,8 @@ jobs:
       - name: Test
         working-directory: ./backend
         run: |
+          echo "$APP_ENV_CONTENT" > app.env
+          echo "$DB_ENV_CONTENT" > db.env
           docker-compose run --rm app sh -c "python manage.py test"
       - name: Linting
         working-directory: ./backend

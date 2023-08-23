@@ -9,11 +9,15 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-CREATE_USER_URL = reverse("user:create")
+CREATE_USER_URL = reverse("user:create-user")
 
 def create_user(**params):
     """Create user"""
     return get_user_model().objects.create_user(**params)
+
+def user_specific_url(user_id): 
+    """Create dynamic user detail URL"""
+    return reverse("user:delete-detail",args=[user_id])
 
 
 class PublicUserAPITest(TestCase):

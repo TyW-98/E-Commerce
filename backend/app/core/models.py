@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 class UserManager(BaseUserManager):
     """Custom User manager"""
 
-    def create_user(self, username, email, password=None, **kwargs):
+    def create_user(self, username, email, password, **kwargs):
         """Create new user"""
         missing_details = []
         
@@ -62,6 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         auto_now=False,
         auto_now_add=False,
     )
+    country = models.CharField(_("Country"), max_length=50)
     is_active = models.BooleanField(_(""), default=True)
     is_staff = models.BooleanField(_(""), default=False)
     is_superuser = models.BooleanField(_(""), default=False)

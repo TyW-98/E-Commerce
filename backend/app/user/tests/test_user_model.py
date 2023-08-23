@@ -16,7 +16,8 @@ class UserModelTest(TestCase):
             "password": "testpassword",
             "first_name": "Example first",
             "last_name": "Example last",
-            "dob": date(1998,7,6)
+            "dob": date(1998,7,6),
+            "country": "United Kingdom"
         }
     
     def test_create_user_model(self):
@@ -26,6 +27,7 @@ class UserModelTest(TestCase):
         self.assertEqual(user.email, self.user_details["email"])
         self.assertEqual(user.username, self.user_details["username"])
         self.assertTrue(user.check_password(self.user_details["password"]))
+        self.assertEqual(user.country,self.user_details["country"])
         
     def test_normalised_email(self):
         """Test normalising user email"""

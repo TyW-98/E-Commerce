@@ -33,12 +33,13 @@ class UserViewSets(viewsets.ModelViewSet):
         if user.is_staff or user.is_superuser:
             return get_user_model().objects.all() 
         elif user.is_authenticated:
-            if self.request.user == user:
+            requested_user_id = self.kwargs.get("pk")
+            if requested_user_id == str(user.id):
                 return get_user_model().objects.filter(id=user.id)
+            else: 
+                raise PermissionDenied("You do not have permission!")
         else:
             raise PermissionDenied("You do not have permission to this method")
-
-        
     
     @action(methods=["post"], detail=False, permission_classes=[AllowAny])
     def create_user(self, request, **kwargs):

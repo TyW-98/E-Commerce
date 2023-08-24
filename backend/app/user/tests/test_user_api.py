@@ -90,7 +90,7 @@ class PublicUserAPITest(TestCase):
         
     def test_cannot_fetch_user_details(self):
         """Test cannot fetch any user data without authenticating"""
-        auth_user = get_user_model().objects.create_user(**self.user_details)
+        auth_user = create_user(**self.user_details)
         res = self.client.get(user_specific_url(auth_user.id))
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         
@@ -117,7 +117,7 @@ class PrivateUserAPITest(TestCase):
             "dob": date(1998,7,6),
             "country": "United Kingdom"
         }
-        self.user = get_user_model().objects.create_user(**self.user_details)
+        self.user = create_user(**self.user_details)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
     
@@ -128,6 +128,15 @@ class PrivateUserAPITest(TestCase):
         serializer = UserSerializer(user, many=False)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+        
+    def test_fetch_another_user_details(self):
+        """Test fetching another user's details"""
+        user2_details = dict(self.user_details)
+        user2_details["email"] = "test2@example.com"
+        user2_details["username"] = "example2"
+        user2 = create_user(**user2_details)
+        res = self.client.get(user_specific_url(user2.id))
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         
     def test_create_superuser_authenticated(self):
         """Test authenticated user cannot create superuser"""

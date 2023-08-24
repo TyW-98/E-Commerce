@@ -13,5 +13,6 @@ app_name = "user"
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("user/create_user/", views.UserViewSets.as_view({"post": "create_user"}), name="create-user"),
+    path("create_user/", views.UserViewSets.as_view({"post": "create_user"}), name="create-user"),
+    path("account/", views.UserViewSets.as_view({"get": "fetch_user_details"}), name="fetch-user-details")
 ]

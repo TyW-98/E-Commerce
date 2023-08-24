@@ -8,8 +8,12 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
+from user.serializers import UserSerializer
 
+ALL_USERS_URL = reverse("user:user-list")
 CREATE_USER_URL = reverse("user:create-user")
+USER_ACCOUNT_DETAILS_URL = reverse("user:user-fetch-user-details")
+
 
 def create_user(**params):
     """Create user"""
@@ -77,3 +81,35 @@ class PublicUserAPITest(TestCase):
             
             res = self.client.post(CREATE_USER_URL, payload)
             self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+            
+    def test_error_fetch_user(self):
+        """Test cannot fetch users data if not admin or staff"""
+        res = self.client.get(ALL_USERS_URL)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+            
+
+class PrivateUserAPITest(TestCase):
+    
+    def setUp(self):
+        user_details = {
+            "username": "example",
+            "email": "test@example.com",
+            "password": "testpassword",
+            "first_name": "Example first",
+            "last_name": "Example last",
+            "dob": date(1998,7,6),
+            "country": "United Kingdom"
+        }
+        self.user = get_user_model().objects.create_user(**user_details)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        
+    
+    def test_fetch_user_details(self):
+        res = self.client.get(USER_ACCOUNT_DETAILS_URL)
+        user = get_user_model().objects.get(id=self.user.id)
+        serializer = UserSerializer(user, many=False)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+# TODO : fetching another user's detail error, creating superuser, creating staff, admin dashboard setup, update account details, account delete, change password, token creation validation

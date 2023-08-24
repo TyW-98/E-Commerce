@@ -32,14 +32,13 @@ class UserViewSets(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff or user.is_superuser:
             return get_user_model().objects.all() 
+        elif user.is_authenticated:
+            if self.request.user == user:
+                return get_user_model().objects.filter(id=user.id)
         else:
-            raise PermissionDenied("You do not have permission to access this resource")
+            raise PermissionDenied("You do not have permission to this method")
+
         
-    @action(methods=["get"], detail=False, permission_classes=[IsAuthenticated], authentication_classes=[TokenAuthentication])
-    def fetch_user_details(self,request):
-        user_details = get_user_model().objects.get(id=self.request.user.id)
-        serializer = UserSerializer(user_details, many=False)
-        return Response(serializer.data)
     
     @action(methods=["post"], detail=False, permission_classes=[AllowAny])
     def create_user(self, request, **kwargs):
@@ -54,6 +53,10 @@ class UserViewSets(viewsets.ModelViewSet):
         """Only Staff or admin can create another staff account"""
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        
+        if not request.user.is_staff:
+            raise PermissionDenied("You do not have permission to create a staff!")
+        
         staff = get_user_model().objects.create_staff(**serializer.validated_data)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
@@ -62,5 +65,14 @@ class UserViewSets(viewsets.ModelViewSet):
         """Only Admin can create another admin account"""
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        superuser = get_user_model().objects.create_superuser(**serializer.validated_data)
+        
+        if not request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to create a superuser!")
+        
+        superuser = get_user_model().objects.create_superuser(
+            username=serializer.validated_data["username"],
+            email=serializer.validated_data["email"],
+            password=serializer.validated_data["password"],
+            **serializer.validated_data
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)

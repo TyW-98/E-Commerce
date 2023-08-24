@@ -14,5 +14,7 @@ app_name = "user"
 urlpatterns = [
     path("", include(router.urls)),
     path("create_user/", views.UserViewSets.as_view({"post": "create_user"}), name="create-user"),
+    path("c-staff/", views.UserViewSets.as_view({"post": "create_staff"}), name="create-staff"),
+    path("c-admin/", views.UserViewSets.as_view({"post": "create_superuser"}), name="create-admin"),
     path("account/", views.UserViewSets.as_view({"get": "fetch_user_details"}), name="fetch-user-details")
 ]

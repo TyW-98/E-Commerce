@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 class UserManager(BaseUserManager):
     """Custom User manager"""
 
-    def create_user(self, username, email, password, **kwargs):
+    def create_user(self, username, email, password, dob=date.today(),**kwargs):
         """Create new user"""
         missing_details = []
         
@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         if missing_details:
             raise ValueError(f"Please provide {', '.join(missing_details)}")
         
-        user = self.model(username=username, email=self.normalize_email(email), **kwargs)
+        user = self.model(username=username, email=self.normalize_email(email), dob=dob, **kwargs)
         user.set_password(password)
         user.save(using=self.db)
         
@@ -42,7 +42,7 @@ class UserManager(BaseUserManager):
         
         return staff
     
-    def create_superuser(self, username, email, password=None, **kwargs):
+    def create_superuser(self, username, email, password, **kwargs):
         """Create Super user"""
         super_user = self.create_user(username, email, password, **kwargs)
         super_user.is_staff = True
@@ -84,6 +84,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email"]
 
     def __str__(self):
         return f"{self.username}"

@@ -12,7 +12,8 @@ from user.serializers import UserSerializer
 
 ALL_USERS_URL = reverse("user:user-list")
 CREATE_USER_URL = reverse("user:create-user")
-USER_ACCOUNT_DETAILS_URL = reverse("user:user-fetch-user-details")
+CREATE_STAFF_URL = reverse("user:create-staff")
+CREATE_SUPERUSER_URL = reverse("user:create-admin")
 
 
 def create_user(**params):
@@ -21,7 +22,7 @@ def create_user(**params):
 
 def user_specific_url(user_id): 
     """Create dynamic user detail URL"""
-    return reverse("user:delete-detail",args=[user_id])
+    return reverse("user:user-detail",args=[user_id])
 
 
 class PublicUserAPITest(TestCase):
@@ -83,15 +84,31 @@ class PublicUserAPITest(TestCase):
             self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
             
     def test_error_fetch_user(self):
-        """Test cannot fetch users data if not admin or staff"""
+        """Test cannot fetch all users data if not admin or staff"""
         res = self.client.get(ALL_USERS_URL)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        
+    def test_cannot_fetch_user_details(self):
+        """Test cannot fetch any user data without authenticating"""
+        auth_user = get_user_model().objects.create_user(**self.user_details)
+        res = self.client.get(user_specific_url(auth_user.id))
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        
+    def test_create_superuser(self):
+        """Test cannot create superuser"""
+        res = self.client.post(CREATE_SUPERUSER_URL, self.user_details)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        
+    def test_cannot_create_staff(self):
+        """Test cannot create staff"""
+        res = self.client.post(CREATE_STAFF_URL, self.user_details)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
             
 
 class PrivateUserAPITest(TestCase):
     
     def setUp(self):
-        user_details = {
+        self.user_details = {
             "username": "example",
             "email": "test@example.com",
             "password": "testpassword",
@@ -100,16 +117,37 @@ class PrivateUserAPITest(TestCase):
             "dob": date(1998,7,6),
             "country": "United Kingdom"
         }
-        self.user = get_user_model().objects.create_user(**user_details)
+        self.user = get_user_model().objects.create_user(**self.user_details)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-        
     
     def test_fetch_user_details(self):
-        res = self.client.get(USER_ACCOUNT_DETAILS_URL)
+        """Test fetching user's details"""
+        res = self.client.get(user_specific_url(self.user.id))
         user = get_user_model().objects.get(id=self.user.id)
         serializer = UserSerializer(user, many=False)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+        
+    def test_create_superuser_authenticated(self):
+        """Test authenticated user cannot create superuser"""
+        payload = dict(self.user_details)
+        payload["email"] = "testadmin@example.com"
+        payload["username"] = "testadmin"
+        res = self.client.post(CREATE_SUPERUSER_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        is_created = get_user_model().objects.filter(email=payload["email"]).exists()
+        self.assertFalse(is_created)
+        
+    def test_create_staff_authenticated(self):
+        """Test authenticated user cannot create staff"""
+        payload = dict(self.user_details)
+        payload["email"] = "teststaff@example.com"
+        payload["username"] = "teststaff"
+        res = self.client.post(CREATE_STAFF_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        is_created = get_user_model().objects.filter(email=payload["email"]).exists()
+        self.assertFalse(is_created)
+        
 
-# TODO : fetching another user's detail error, creating superuser, creating staff, admin dashboard setup, update account details, account delete, change password, token creation validation
+# TODO :  creating superuser, creating staff, admin dashboard setup, update account details, account delete, change password, token creation validationS

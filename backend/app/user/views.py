@@ -3,7 +3,7 @@ Views for custom user API
 """
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
-from rest_framework import status, viewsets
+from rest_framework import generics, status, viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.permissions import (
@@ -30,14 +30,8 @@ class UserViewSets(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.is_superuser:
+        if user.is_superuser or user.is_staff:
             return get_user_model().objects.all() 
-        elif user.is_authenticated:
-            requested_user_id = self.kwargs.get("pk")
-            if requested_user_id == str(user.id):
-                return get_user_model().objects.filter(id=user.id)
-            else: 
-                raise PermissionDenied("You do not have permission!")
         else:
             raise PermissionDenied("You do not have permission to this method")
     
@@ -81,3 +75,30 @@ class UserViewSets(viewsets.ModelViewSet):
             # ... any other fields you have
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+
+class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
+    """Manage authenticated users"""
+    serializer_class = UserSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        """Retieve and return authenticated user details"""
+        return self.request.user
+    
+    def perform_destroy(self, instance):
+        
+        if (
+            self.request.user.is_superuser
+            or self.request.user.is_staff
+            or (
+                self.request.user.is_authenticated
+                and instance == self.request.user
+            )
+        ):
+            instance.delete()
+        else:
+            raise PermissionDenied(
+                "You do not have permission to carry out this action"
+            )

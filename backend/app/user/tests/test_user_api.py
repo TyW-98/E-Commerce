@@ -11,6 +11,7 @@ from rest_framework.test import APIClient
 from user.serializers import UserSerializer
 
 ALL_USERS_URL = reverse("user:user-list")
+USER_ACCOUNT_URL = reverse("user:account")
 CREATE_USER_URL = reverse("user:create-user")
 CREATE_STAFF_URL = reverse("user:create-staff")
 CREATE_SUPERUSER_URL = reverse("user:create-admin")
@@ -90,9 +91,8 @@ class PublicUserAPITest(TestCase):
         
     def test_cannot_fetch_user_details(self):
         """Test cannot fetch any user data without authenticating"""
-        auth_user = create_user(**self.user_details)
-        res = self.client.get(user_specific_url(auth_user.id))
-        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        res = self.client.get(USER_ACCOUNT_URL)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_create_superuser(self):
         """Test cannot create superuser"""
@@ -153,19 +153,24 @@ class PrivateUserAPITest(TestCase):
 
     def test_fetch_user_details(self):
         """Test fetching user's details"""
-        res = self.client.get(user_specific_url(self.user.id))
+        res = self.client.get(USER_ACCOUNT_URL)
         user = get_user_model().objects.get(id=self.user.id)
         serializer = UserSerializer(user, many=False)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
         
-    def test_fetch_another_user_details(self):
-        """Test fetching another user's details"""
-        user2_details = dict(self.user_details)
-        user2_details["email"] = "test2@example.com"
-        user2_details["username"] = "example2"
-        user2 = create_user(**user2_details)
-        res = self.client.get(user_specific_url(user2.id))
+    # def test_fetch_another_user_details(self):
+    #     """Test cannot fetch another user's details""" use token isntead of user2.id
+    #     user2_details = dict(self.user_details)
+    #     user2_details["email"] = "test2@example.com"
+    #     user2_details["username"] = "example2"
+    #     user2 = create_user(**user2_details)
+    #     res = self.client.get(user_specific_url(user2.id))
+    #     self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        
+    def test_all_user_details(self):
+        """Test cannot fetch all users' details"""
+        res = self.client.get(ALL_USERS_URL)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
     
     def test_create_superuser(self):
@@ -218,5 +223,36 @@ class PrivateUserAPITest(TestCase):
         res = self.staff_client.post(CREATE_SUPERUSER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         
+    def test_update_user_details(self):
+        """Test updating user's information"""
+        patch_payload = {
+            "first_name": "Update First",
+            "last_name": "Update Last",
+            "password": "Updatedpassword"
+        }
+        res = self.client.patch(USER_ACCOUNT_URL, patch_payload)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        
+        self.user.refresh_from_db()
+        self.assertEqual(
+        {
+            "first_name": self.user.first_name,
+            "last_name": self.user.last_name
+        },
+        {
+            "first_name": patch_payload["first_name"],
+            "last_name": patch_payload["last_name"]
+        }
+        )
+        self.assertTrue(self.user.check_password(patch_payload["password"]))
+        
+    def test_delete_user(self):
+        """Test deleting user's account"""
+        res = self.client.delete(USER_ACCOUNT_URL)
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        deleted_user = get_user_model().objects.filter(email=self.user_details["email"]).exists()
+        self.assertFalse(deleted_user)
+        
+        
 
-# TODO :  creating superuser, creating staff, admin dashboard setup, update account details, account delete, change password, token creation validationS
+# TODO :  admin dashboard setup, account delete, token creation validationS

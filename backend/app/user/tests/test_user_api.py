@@ -107,6 +107,36 @@ class PublicUserAPITest(TestCase):
 
 class PrivateUserAPITest(TestCase):
     
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.admin_details = {
+            "username": "admin_user",
+            "email": "admin_@example.com",
+            "password": "admin_password",
+            "first_name": "Admin First",
+            "last_name": "Admin Last",
+            "dob": date(1980, 1, 1),  # Choose a suitable date
+            "country": "United Kingdom",
+        }
+        cls.admin = get_user_model().objects.create_superuser(**cls.admin_details)
+        cls.admin_client = APIClient()
+        cls.admin_client.force_authenticate(user=cls.admin)
+
+    
+        cls.staff_details = {
+            "username": "staff_user",
+            "email": "staff_@example.com",
+            "password": "staff_password",
+            "first_name": "staff first",
+            "last_name": "staff last",
+            "dob": date(1980,1,1),
+            "country": "United Kingdom"
+        }
+        cls.staff = get_user_model().objects.create_staff(**cls.staff_details)
+        cls.staff_client = APIClient()
+        cls.staff_client.force_authenticate(user=cls.staff)
+    
     def setUp(self):
         self.user_details = {
             "username": "example",
@@ -120,7 +150,7 @@ class PrivateUserAPITest(TestCase):
         self.user = create_user(**self.user_details)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-    
+
     def test_fetch_user_details(self):
         """Test fetching user's details"""
         res = self.client.get(user_specific_url(self.user.id))
@@ -137,8 +167,30 @@ class PrivateUserAPITest(TestCase):
         user2 = create_user(**user2_details)
         res = self.client.get(user_specific_url(user2.id))
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+    
+    def test_create_superuser(self):
+        """Test creating superuser"""
+        payload = dict(self.admin_details)
+        payload["email"] = "admin2@example.com"
+        payload["username"] = "admin2"
+        res = self.admin_client.post(CREATE_SUPERUSER_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        test_admin = get_user_model().objects.get(username=payload["username"])
+        self.assertTrue(test_admin.is_superuser)
+        self.assertTrue(test_admin.is_staff)
         
-    def test_create_superuser_authenticated(self):
+    def test_create_staff(self):
+        """Test creating staff user"""
+        payload = dict(self.staff_details)
+        payload["email"] = "staff@example.com"
+        payload["username"] = "staff2"
+        res = self.staff_client.post(CREATE_STAFF_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        test_staff = get_user_model().objects.get(username=payload["username"])
+        self.assertTrue(test_staff.is_staff)
+        self.assertFalse(test_staff.is_superuser)
+        
+    def ttest_authenticated_create_superuser(self):
         """Test authenticated user cannot create superuser"""
         payload = dict(self.user_details)
         payload["email"] = "testadmin@example.com"
@@ -148,7 +200,7 @@ class PrivateUserAPITest(TestCase):
         is_created = get_user_model().objects.filter(email=payload["email"]).exists()
         self.assertFalse(is_created)
         
-    def test_create_staff_authenticated(self):
+    def test_authenticated_create_staff(self):
         """Test authenticated user cannot create staff"""
         payload = dict(self.user_details)
         payload["email"] = "teststaff@example.com"
@@ -157,6 +209,14 @@ class PrivateUserAPITest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         is_created = get_user_model().objects.filter(email=payload["email"]).exists()
         self.assertFalse(is_created)
+        
+    def test_staff_create_superuser(self):
+        """Test staff user cannot create superuser"""
+        payload = dict(self.admin_details)
+        payload["email"] = "admin2@example.com"
+        payload["username"] = "admin2@example.com"
+        res = self.staff_client.post(CREATE_SUPERUSER_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         
 
 # TODO :  creating superuser, creating staff, admin dashboard setup, update account details, account delete, change password, token creation validationS

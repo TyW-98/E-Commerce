@@ -74,6 +74,10 @@ class UserViewSets(viewsets.ModelViewSet):
             username=serializer.validated_data["username"],
             email=serializer.validated_data["email"],
             password=serializer.validated_data["password"],
-            **serializer.validated_data
+            first_name=serializer.validated_data["first_name"],
+            last_name=serializer.validated_data["last_name"],
+            dob=serializer.validated_data["dob"],
+            country=serializer.validated_data["country"],
+            # ... any other fields you have
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)

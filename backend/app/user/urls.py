@@ -16,5 +16,6 @@ urlpatterns = [
     path("create_user/", views.UserViewSets.as_view({"post": "create_user"}), name="create-user"),
     path("c-staff/", views.UserViewSets.as_view({"post": "create_staff"}), name="create-staff"),
     path("c-admin/", views.UserViewSets.as_view({"post": "create_superuser"}), name="create-admin"),
-    path("account/", views.ManageUserView.as_view(), name="account")
+    path("account/", views.ManageUserView.as_view(), name="account"),
+    path("token/", views.CreateTokenView.as_view(), name="token")
 ]

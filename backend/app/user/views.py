@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from rest_framework import generics, status, viewsets
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action
 from rest_framework.permissions import (
     AllowAny,
@@ -13,7 +14,8 @@ from rest_framework.permissions import (
     IsAuthenticated,
 )
 from rest_framework.response import Response
-from user.serializers import UserSerializer
+from rest_framework.settings import api_settings
+from user.serializers import AuthTokenSerializer, UserSerializer
 
 
 class IsAdminOrStaff(BasePermission):
@@ -102,3 +104,9 @@ class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied(
                 "You do not have permission to carry out this action"
             )
+            
+
+class CreateTokenView(ObtainAuthToken):
+    """Create login token for users"""
+    serializer_class = AuthTokenSerializer
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES

@@ -63,9 +63,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         auto_now_add=False,
     )
     country = models.CharField(_("Country"), max_length=50)
-    is_active = models.BooleanField(_(""), default=True)
-    is_staff = models.BooleanField(_(""), default=False)
-    is_superuser = models.BooleanField(_(""), default=False)
+    is_active = models.BooleanField(_("Is Active"), default=True)
+    is_staff = models.BooleanField(_("Is Staff"), default=False)
+    is_superuser = models.BooleanField(_("Is superuser"), default=False)
     joined_date = models.DateField(_("Joined Date"), auto_now_add=True)
     last_login = models.DateField(_("Last Online"), auto_now_add=True)
 
@@ -87,4 +87,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["email"]
 
     def __str__(self):
-        return f"{self.username}"
+        return str(self.username)

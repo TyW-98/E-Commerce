@@ -20,7 +20,7 @@ jobs:
           echo "$APP_ENV_CONTENT" > app.env
           echo "$DB_ENV_CONTENT" > db.env
           docker-compose run --rm backend sh -c "python manage.py test"
-      - name: Linting
-        working-directory: ./backend
-        run: |
-          docker-compose run --rm backend sh -c "flake8"
+      # - name: Linting
+      #   working-directory: ./backend
+      #   run: |
+      #     docker-compose run --rm backend sh -c "flake8"

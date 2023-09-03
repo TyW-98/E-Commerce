@@ -255,4 +255,4 @@ class PrivateUserAPITest(TestCase):
         
         
 
-# TODO :  admin dashboard setup, account delete, token creation validationS
+# TODO :  admin dashboard setup, token creation validationS

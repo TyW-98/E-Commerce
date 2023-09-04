@@ -18,7 +18,7 @@ export default function ModernNavbar() {
       <div className="min-w-screen px-10 border-b-black border pt-4">
         <nav className="flex align-middle items-center justify-between">
           <a
-            href=""
+            href="/"
             className="text-4xl text-black font-semibold cursor-pointer"
           >
             GoTech
@@ -62,7 +62,7 @@ export default function ModernNavbar() {
               Sign Up
             </a>
             <a
-              href=""
+              href="login/"
               className="bg-white text-black py-2 px-5 border-black border font-medium active:opacity-60"
             >
               Login

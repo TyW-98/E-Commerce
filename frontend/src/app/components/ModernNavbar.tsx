@@ -42,7 +42,7 @@ export default function ModernNavbar() {
             </div>
           </div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="flex bg-slate-200 items-center">
+            {/* <div className="flex bg-slate-200 items-center">
               <input
                 type="text"
                 name="search"
@@ -54,7 +54,7 @@ export default function ModernNavbar() {
               <div>
                 <AiOutlineSearch className="text-2xl cursor-pointer font-bold" />
               </div>
-            </div>
+            </div> */}
             <a
               href=""
               className="bg-black text-white py-2 px-5 font-medium border-slate-900 border active:opacity-60"

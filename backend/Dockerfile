@@ -38,7 +38,7 @@ RUN python -m venv /py && \
     apk del .tmp-build-deps && \
     # Add new user inside docker image
     adduser \
-        --disable-password \
+        --disabled-password \
         --no-create-home \
         project-user
 
@@ -46,4 +46,4 @@ RUN python -m venv /py && \
 ENV PATH="/py/bin:$PATH"
 
 # Switch away from root user
-USER proejct-user
+USER project-user

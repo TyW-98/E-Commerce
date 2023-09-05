@@ -1,11 +1,13 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 import Cookie from "js-cookie";
 
 type Props = {};
 
 export default function LoginPage({}: Props) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [loginDetails, setLoginDetails] = useState({
     username: "",
@@ -48,6 +50,7 @@ export default function LoginPage({}: Props) {
           secure: true,
         });
         console.log("Login Successfully");
+        router.push("/dashboard");
       } else if (!loginResponse.ok) {
         console.error("Login Error", loginResponse.statusText);
       }

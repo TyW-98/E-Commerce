@@ -1,8 +1,9 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, useContext, ChangeEvent, FormEvent } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Cookie from "js-cookie";
+import { AuthContext } from "@/context/AuthContext";
 
 type Props = {};
 
@@ -13,6 +14,8 @@ export default function LoginPage({}: Props) {
     username: "",
     password: "",
   });
+
+  const { setAuthToken } = useContext(AuthContext);
 
   const handleLoginInput = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -44,11 +47,12 @@ export default function LoginPage({}: Props) {
       if (loginResponse.status === 200) {
         const authData = await loginResponse.json();
         const authToken = authData.token;
-        Cookie.set("authToken", authToken, {
-          expires: 1,
-          path: "/",
-          secure: true,
-        });
+        // Cookie.set("authToken", authToken, {
+        //   expires: 1,
+        //   path: "/",
+        //   secure: true,
+        // });
+        setAuthToken(authToken);
         console.log("Login Successfully");
         router.push("/dashboard");
       } else if (!loginResponse.ok) {
